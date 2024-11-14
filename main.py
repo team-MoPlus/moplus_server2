@@ -1,4 +1,5 @@
 from typing import Union, List
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from fastapi import FastAPI
 from time import time
@@ -7,6 +8,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 import httpx
 import asyncio
+
+from pdfmain import create_review_note
 
 app = FastAPI()
 
@@ -66,3 +69,24 @@ async def get_rating(practiceTestId: str):
     async with httpx.AsyncClient() as client:
         response = await client.get(f"{API_URL}/rating/{practiceTestId}")
     return response.text
+
+
+# 사진 다운로드
+# @app.get("/image/{imageId}")
+# async def get_image_by_id(photo_id: int, db: Session = Depends(get_db)):
+#     find_photo: Photo = db.query(Photo).filter_by(photo_id=photo_id).first()
+#     return FileResponse(find_photo.src)
+
+
+# PDF 다운로드 엔드포인트
+@app.get("/download-review")
+async def download_review_note():
+    await create_review_note()
+
+    # PDF 파일 다운로드
+    response = FileResponse(path="./output.pdf", filename='download_review.pdf', media_type="application/pdf")
+    
+    # 다운로드 완료 후 파일 삭제
+    response.headers["Cache-Control"] = "no-cache"
+    
+    return response
