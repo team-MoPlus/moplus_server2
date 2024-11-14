@@ -1,7 +1,7 @@
 from typing import Union, List
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from time import time
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -28,13 +28,30 @@ class IncorrectProblem(BaseModel):
     problemNumber: str
     correctRate: float
 
-class TestResult(BaseModel):
+class RatingRow(BaseModel):
+    rating: int
+    rawScores: str
+    standardScores: int
+    percentiles: int
+
+class RatingTable(BaseModel):
     id: int
+    practiceId: int
+    ratingProvider: str
+    ratingRows: List[RatingRow]
+
+class EstimatedRank(BaseModel):
+    ratingProvider: str
+    estimatedRating: int
+
+class TestResult(BaseModel):
+    testResultId: int
     score: int
     solvingTime: str
     averageSolvingTime: str
-    estimatedRating: int
+    estimatedRatingGetResponses: List[EstimatedRank]
     incorrectProblems: List[IncorrectProblem]
+    ratingTables: List[RatingTable]
 
 async def requestPracticeTests(client):
     response = await client.get(f"{API_URL}/practiceTests/2")
@@ -77,11 +94,21 @@ async def get_rating(practiceTestId: str):
 #     find_photo: Photo = db.query(Photo).filter_by(photo_id=photo_id).first()
 #     return FileResponse(find_photo.src)
 
+# 복습표 생성 요청
+@app.post("/request-review")
+async def request_review_note():
+    try:
+        await create_review_note()
+
+        return {"status": "OK"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
 
 # PDF 다운로드 엔드포인트
 @app.get("/download-review")
 async def download_review_note():
-    await create_review_note()
+    
 
     # PDF 파일 다운로드
     response = FileResponse(path="./output.pdf", filename='download_review.pdf', media_type="application/pdf")
