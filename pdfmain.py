@@ -6,7 +6,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.colors import HexColor
 from utils import draw_vertical_orange
 
-if __name__ == "__main__":
+async def create_review_note():
     # 현재 파일의 디렉토리 경로를 기준으로 폰트 경로 설정
     # base_dir = os.path.dirname(__file__)
     
