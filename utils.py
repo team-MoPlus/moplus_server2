@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from io import BytesIO
 from reportlab.lib.colors import HexColor
 from reportlab.lib.pagesizes import A4
@@ -23,12 +24,15 @@ def draw_heading(c, orange_color=HexColor('#FC6C02'), lightgrey_color=HexColor('
     c.setLineWidth(4)
     c.line(20, 770, 575, 770)
 
+=======
+>>>>>>> main
 
 # 주황색 세로선 그리기
 def draw_vertical_orange(canvas, x1, y1, x2, y2, color, width=3):
     canvas.setStrokeColor(color)
     canvas.setLineWidth(width)  # 선의 두께
     canvas.line(x1, y1, x2, y2)  # 세로선 좌표
+<<<<<<< HEAD
 
 
 # 점선 상자
@@ -129,3 +133,5 @@ def draw_problem_page(c, data:RecommendedProblem, orange_color=HexColor('#FC6C02
     x = (A4_width - scaled_width) / 2
     
     c.drawImage(image_reader, x=x, y=A4_height-scaled_height-200, width=scaled_width, height=scaled_height)
+=======
+>>>>>>> main

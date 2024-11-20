@@ -5,7 +5,11 @@ from fastapi import FastAPI, HTTPException
 from time import time
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
+<<<<<<< HEAD
 from models import DetailResultApplication, TestResult
+=======
+from models import TestResult
+>>>>>>> main
 from pdfmain import create_review_note
 from database import SessionLocal, engine
 from sqlalchemy.orm import Session
@@ -65,7 +69,7 @@ async def read_root():
 
 @app.post("/test/resultInfo")
 async def get_result_info_from_client(test_result: TestResult):
-    return {"message": "Data received successfully"}
+    return {"message": "Data received successfully", "response": test_result}
 
 @app.post("/detailResultApplication")
 async def get_detail_result_application_from_client(detail_result: DetailResultApplication):
@@ -85,6 +89,10 @@ async def get_rating(practiceTestId: str):
     return response.text
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 @app.get("/image-url")
 def get_image_url(problem_id: int, db:Session=Depends(get_db)):
     problem_image_info = crud.get_image(db, problem_id)
