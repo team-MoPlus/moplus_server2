@@ -1,15 +1,29 @@
 from typing import Union, List
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from time import time
 from fastapi.middleware.cors import CORSMiddleware
-
-
+from dotenv import load_dotenv
+<<<<<<< HEAD
+from models import DetailResultApplication, TestResult
+=======
+from models import TestResult
+>>>>>>> main
+from pdfmain import create_review_note
+from database import SessionLocal, engine
+from sqlalchemy.orm import Session
+from fastapi import FastAPI, Depends, HTTPException
+import crud, models
 import httpx
 import asyncio
+import os
 
-from pdfmain import create_review_note
+load_dotenv()
+
+API_URL = os.getenv("API_URL")
+
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -21,20 +35,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-API_URL = "https://dev.mopl.kr/api/v1"
 
-
-class IncorrectProblem(BaseModel):
-    problemNumber: str
-    correctRate: float
-
-class TestResult(BaseModel):
-    id: int
-    score: int
-    solvingTime: str
-    averageSolvingTime: str
-    estimatedRating: int
-    incorrectProblems: List[IncorrectProblem]
+# Dependency Injection 
+def get_db():
+    db = SessionLocal()
+    try : 
+        yield db
+    finally:
+        db.close()
 
 async def requestPracticeTests(client):
     response = await client.get(f"{API_URL}/practiceTests/2")
@@ -61,7 +69,17 @@ async def read_root():
 
 @app.post("/test/resultInfo")
 async def get_result_info_from_client(test_result: TestResult):
-    return {"message": "Data received successfully"}
+    return {"message": "Data received successfully", "response": test_result}
+
+@app.post("/detailResultApplication")
+async def get_detail_result_application_from_client(detail_result: DetailResultApplication):
+    try:
+        detail_result = detail_result.model_dump()
+        await create_review_note(detail_result)
+
+        return {"status": "OK"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.get("/test/rating/{practiceTestId}", tags=["test"])
@@ -71,18 +89,31 @@ async def get_rating(practiceTestId: str):
     return response.text
 
 
-# 사진 다운로드
-# @app.get("/image/{imageId}")
-# async def get_image_by_id(photo_id: int, db: Session = Depends(get_db)):
-#     find_photo: Photo = db.query(Photo).filter_by(photo_id=photo_id).first()
-#     return FileResponse(find_photo.src)
+<<<<<<< HEAD
+=======
 
+>>>>>>> main
+@app.get("/image-url")
+def get_image_url(problem_id: int, db:Session=Depends(get_db)):
+    problem_image_info = crud.get_image(db, problem_id)
+    return problem_image_info.image_url
+
+# 복습표 생성 요청
+@app.post("/request-review")
+async def request_review_note():
+    try:
+        # problem_info = crud.get_image(db, skip=0, limit=0)
+        await create_review_note()
+
+        return {"status": "OK"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
 
 # PDF 다운로드 엔드포인트
 @app.get("/download-review")
 async def download_review_note():
-    await create_review_note()
-
+    
     # PDF 파일 다운로드
     response = FileResponse(path="./output.pdf", filename='download_review.pdf', media_type="application/pdf")
     
