@@ -5,11 +5,8 @@ from fastapi import FastAPI, HTTPException
 from time import time
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
-<<<<<<< HEAD
 from models import DetailResultApplication, TestResult
-=======
 from models import TestResult
->>>>>>> main
 from pdfmain import create_review_note
 from database import SessionLocal, engine
 from sqlalchemy.orm import Session
@@ -88,11 +85,6 @@ async def get_rating(practiceTestId: str):
         response = await client.get(f"{API_URL}/rating/{practiceTestId}")
     return response.text
 
-
-<<<<<<< HEAD
-=======
-
->>>>>>> main
 @app.get("/image-url")
 def get_image_url(problem_id: int, db:Session=Depends(get_db)):
     problem_image_info = crud.get_image(db, problem_id)
