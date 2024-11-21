@@ -1,5 +1,6 @@
+import io
 from typing import Union, List
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel
 from fastapi import FastAPI, HTTPException
 from time import time
@@ -15,6 +16,8 @@ import crud, models
 import httpx
 import asyncio
 import os
+from reportlab.pdfgen import canvas
+
 
 load_dotenv()
 
@@ -69,12 +72,11 @@ async def get_result_info_from_client(test_result: TestResult):
     return {"message": "Data received successfully", "response": test_result}
 
 @app.post("/detailResultApplication")
-async def get_detail_result_application_from_client(detail_result: DetailResultApplication):
+async def get_detail_result_application_from_client(detail_result: DetailResultApplication, file_name: str):
     try:
         detail_result = detail_result.model_dump()
-        await create_review_note(detail_result)
+        await create_review_note(detail_result, file_name)
 
-        return {"status": "OK"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -104,12 +106,15 @@ async def request_review_note():
 
 # PDF 다운로드 엔드포인트
 @app.get("/download-review")
-async def download_review_note():
+async def download_review_note(file_name: str):
+    buffer = io.BytesIO()
+    c = canvas.Canvas(buffer)
     
-    # PDF 파일 다운로드
-    response = FileResponse(path="./output.pdf", filename='download_review.pdf', media_type="application/pdf")
-    
-    # 다운로드 완료 후 파일 삭제
-    response.headers["Cache-Control"] = "no-cache"
-    
-    return response
+    c.save()
+    buffer.seek(0)
+
+    headers = {
+        f"Content-Disposition": "attachment; filename={file_name}.pdf",
+    }
+
+    return StreamingResponse(buffer, headers=headers, media_type="application/pdf")
