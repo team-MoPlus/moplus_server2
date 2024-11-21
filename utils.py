@@ -102,15 +102,15 @@ def draw_problem_page(c, data:RecommendedProblem, orange_color=HexColor('#FC6C02
 
     c.setFont("Pretendard-Regular", 18)
     c.setFillColor(black_color)
-    c.drawString(120, 680, "난이도")
-    c.drawString(260, 680, "정답률")
+    c.drawString(130, 680, "난이도")
+    c.drawString(250, 680, "정답률")
     c.drawString(400, 680, "문제등급")
 
     c.setFont("Pretendard-Bold", 18)
     c.setFillColor(orange_color)
-    c.drawString(180, 680, f'{data["difficultLevel"]}')
-    c.drawString(320, 680, f'{data["correctRate"]}%')
-    c.drawString(480, 680, f'{data["rating"]}')
+    c.drawString(190, 680, f'{data["difficultLevel"]}')
+    c.drawString(310, 680, f'{data["correctRate"]}%')
+    c.drawString(470, 680, f'{data["rating"]}')
 
     res = request.urlopen(data["imageUrl"]).read()
     

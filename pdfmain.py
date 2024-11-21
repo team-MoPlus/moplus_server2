@@ -43,10 +43,11 @@ def create_review_note(data: DetailResultApplication):
     c.setFillColor(orange_color)
     c.setFont("Pretendard-Regular", 80)
     c.drawString(35, height - 230, f'{data["score"]}')
+    score_width = c.stringWidth(f'{data["score"]}', "Pretendard-Regular", 80)
 
     c.setFillColor(black_color)
-    c.setFont("Pretendard-Regular", 80)
-    c.drawString(135, height - 230, "점")
+    c.setFont("Pretendard-Regular", 60)
+    c.drawString(35 + score_width, height - 227, "점")
 
     c.setFillColor(grey_color)
     c.setFont("Pretendard-Regular", 20)
@@ -58,7 +59,7 @@ def create_review_note(data: DetailResultApplication):
     c.drawString(245, height - 230, f'{data["estimatedRatingGetResponses"][0]["estimatedRating"]}')
 
     c.setFillColor(black_color)
-    c.setFont("Pretendard-Regular", 40)
+    c.setFont("Pretendard-Regular", 30)
     c.drawString(270, height - 230, "등급")
 
     c.setFillColor(grey_color)
@@ -67,15 +68,20 @@ def create_review_note(data: DetailResultApplication):
 
     # 내 풀이 시간
     match = re.match(pattern, data["solvingTime"])
+    h, m = f'{match.group(1) if match and match.group(1) else 0}', f'{match.group(2) if match and match.group(2) else 0}'
     c.setFillColor(orange_color)
     c.setFont("Pretendard-Regular", 40)
-    c.drawString(392, height - 230, f'{match.group(1) if match else 0}')
-    c.drawString(440, height - 230, f'{match.group(2) if match else 0}')
+    c.drawString(392, height - 230, h)
+    c.drawString(440, height - 230, m)
+
 
     c.setFillColor(black_color)
-    c.setFont("Pretendard-Regular", 40)
-    c.drawString(408, height - 230, "h")
-    c.drawString(482, height - 230, "m")
+    c.setFont("Pretendard-Regular", 36)
+    h_width = c.stringWidth(h, "Pretendard-Regular", 40)
+    c.drawString(392+h_width, height - 230, "h")
+
+    m_width = c.stringWidth(m, "Pretendard-Regular", 40)
+    c.drawString(440+m_width, height - 230, "m")
     
     c.setFillColor(grey_color)
     c.setFont("Pretendard-Regular", 20)
@@ -97,16 +103,16 @@ def create_review_note(data: DetailResultApplication):
             text_y -= 30
         
         c.setFillColor(black_color)
-        c.setFont("Pretendard-Regular", 24)
+        c.setFont("Pretendard-Regular", 20)
         p_num = f'{problem["problemNumber"]}번'
-        c.drawString(25 + (i%5)*110, text_y, p_num)
+        c.drawString(25 + (i%5)*105, text_y, p_num)
 
         p_num_width = c.stringWidth(p_num, "Pretendard-Regular", 24)
 
         box_width = 40
         box_height = 20
-        box_x = 30 + (i%5)*110 + p_num_width
-        box_y = text_y
+        box_x = 24 + (i%5)*105 + p_num_width
+        box_y = text_y - 3
 
         # 박스 그리기 (배경)
         c.setLineWidth(1)  # 테두리 두께 설정 (얇게)
@@ -116,7 +122,7 @@ def create_review_note(data: DetailResultApplication):
         # 텍스트 그리기
         c.setFont("Pretendard-Regular", 14)  # 글꼴과 크기 설정
         c.setFillColor(orange_color)
-        c.drawString(box_x + 6, box_y + 4, f'{problem["correctRate"]}%')  # 박스 안 텍스트 위치 조정
+        c.drawString(box_x + 6, box_y + 4, f'{int(problem["correctRate"])}%')  # 박스 안 텍스트 위치 조정
 
     # 점선 상자1
     draw_dashed_box(c, 30, 190, width - 60, 270)
@@ -137,34 +143,38 @@ def create_review_note(data: DetailResultApplication):
     text.textLine("넘어가야하는 문제들이예요.")
     c.drawText(text)
 
-    ## 현재 등급에서 맞췄어야 하는 문제
-    text_y = 355
-    for i, problem in enumerate(data["forCurrentRating"]):
-        
-        if i%5 == 0 and i > 0:
-            text_y -= 30
-        
-        c.setFillColor(black_color)
-        c.setFont("Pretendard-Regular", 18)
-        p_num = f'{problem["problemNumber"]}번'
-        c.drawString(45 + (i%5)*110, text_y, p_num)
+    if len(data["forCurrentRating"]) == 0:
+        c.setFillColor(HexColor("#95E0BB"))
+        c.setFont("Pretendard-Bold", 20)
+        c.drawString(52, 348, "모두 맞았어요!")
+    else:
+        text_y = 355
+        for i, problem in enumerate(data["forCurrentRating"]):
+            
+            if i%5 == 0 and i > 0:
+                text_y -= 30
+            
+            c.setFillColor(black_color)
+            c.setFont("Pretendard-Regular", 18)
+            p_num = f'{problem["problemNumber"]}번'
+            c.drawString(45 + (i%5)*105, text_y, p_num)
 
-        p_num_width = c.stringWidth(p_num, "Pretendard-Regular", 18)
+            p_num_width = c.stringWidth(p_num, "Pretendard-Regular", 18)
 
-        box_width = 40
-        box_height = 20
-        box_x = 50 + (i%5)*110 + p_num_width
-        box_y = text_y - 4
+            box_width = 40
+            box_height = 20
+            box_x = 50 + (i%5)*105 + p_num_width
+            box_y = text_y - 4
 
-        # 박스 그리기 (배경)
-        c.setLineWidth(1)  # 테두리 두께 설정 (얇게)
-        c.setStrokeColor(HexColor("#FFA500"))  # 주황색 테두리
-        c.roundRect(box_x, box_y, box_width, box_height, radius=4, stroke=1, fill=0)
+            # 박스 그리기 (배경)
+            c.setLineWidth(1)  # 테두리 두께 설정 (얇게)
+            c.setStrokeColor(HexColor("#FFA500"))  # 주황색 테두리
+            c.roundRect(box_x, box_y, box_width, box_height, radius=4, stroke=1, fill=0)
 
-        # 텍스트 그리기
-        c.setFont("Pretendard-Regular", 14)  # 글꼴과 크기 설정
-        c.setFillColor(orange_color)
-        c.drawString(box_x + 6, box_y + 5, f'{problem["correctRate"]}%')  # 박스 안 텍스트 위치 조정
+            # 텍스트 그리기
+            c.setFont("Pretendard-Regular", 14)  # 글꼴과 크기 설정
+            c.setFillColor(orange_color)
+            c.drawString(box_x + 6, box_y + 5, f'{int(problem["correctRate"])}%')  # 박스 안 텍스트 위치 조정
 
     ### 다음 등급을 위해 맞춰야 하는 문제 ###
     # 세로선 그리기 (오렌지 색상)
@@ -182,33 +192,38 @@ def create_review_note(data: DetailResultApplication):
     text.textLine("다음 등급에서 맞춰야하는 문제들이예요.")
     c.drawText(text)
 
-    text_y = 240
-    for i, problem in enumerate(data["forNextRating"]):
-        
-        if i%5 == 0 and i > 0:
-            text_y -= 30
-        
-        c.setFillColor(black_color)
-        c.setFont("Pretendard-Regular", 18)
-        p_num = f'{problem["problemNumber"]}번'
-        c.drawString(45 + (i%5)*110, text_y, p_num)
+    if len(data["forNextRating"]) == 0:
+        c.setFillColor(HexColor("#95E0BB"))
+        c.setFont("Pretendard-Bold", 20)
+        c.drawString(52, 230, "모두 맞았어요!")
+    else:
+        text_y = 240
+        for i, problem in enumerate(data["forNextRating"]):
+            
+            if i%5 == 0 and i > 0:
+                text_y -= 30
+            
+            c.setFillColor(black_color)
+            c.setFont("Pretendard-Regular", 18)
+            p_num = f'{problem["problemNumber"]}번'
+            c.drawString(45 + (i%5)*105, text_y, p_num)
 
-        p_num_width = c.stringWidth(p_num, "Pretendard-Regular", 18)
+            p_num_width = c.stringWidth(p_num, "Pretendard-Regular", 18)
 
-        box_width = 40
-        box_height = 20
-        box_x = 50 + (i%5)*110 + p_num_width
-        box_y = text_y - 4
+            box_width = 40
+            box_height = 20
+            box_x = 50 + (i%5)*105 + p_num_width
+            box_y = text_y - 4
 
-        # 박스 그리기 (배경)
-        c.setLineWidth(1)  # 테두리 두께 설정 (얇게)
-        c.setStrokeColor(HexColor("#FFA500"))  # 주황색 테두리
-        c.roundRect(box_x, box_y, box_width, box_height, radius=4, stroke=1, fill=0)
+            # 박스 그리기 (배경)
+            c.setLineWidth(1)  # 테두리 두께 설정 (얇게)
+            c.setStrokeColor(HexColor("#FFA500"))  # 주황색 테두리
+            c.roundRect(box_x, box_y, box_width, box_height, radius=4, stroke=1, fill=0)
 
-        # 텍스트 그리기
-        c.setFont("Pretendard-Regular", 14)  # 글꼴과 크기 설정
-        c.setFillColor(orange_color)
-        c.drawString(box_x + 6, box_y + 5, f'{problem["correctRate"]}%')
+            # 텍스트 그리기
+            c.setFont("Pretendard-Regular", 14)  # 글꼴과 크기 설정
+            c.setFillColor(orange_color)
+            c.drawString(box_x + 6, box_y + 5, f'{int(problem["correctRate"])}%')
 
     # 점선 상자2
     draw_dashed_box(c, 30, 40, width - 60, 140)
@@ -229,36 +244,38 @@ def create_review_note(data: DetailResultApplication):
     text.textLine("현재 등급 이상을 안정적으로 받기 위해 체크해볼 만한 문제예요.")
     c.drawText(text)
 
-    text_y = 90
-    for i, problem in enumerate(data["forBeforeRating"]):
-        if i%5 == 0 and i > 0:
-            text_y -= 30
-        
-        c.setFillColor(black_color)
-        c.setFont("Pretendard-Regular", 18)
-        p_num = f'{problem["problemNumber"]}번'
-        c.drawString(45 + (i%5)*110, text_y, p_num)
+    if len(data["forBeforeRating"]) == 0:
+        c.setFillColor(HexColor("#95E0BB"))
+        c.setFont("Pretendard-Bold", 20)
+        c.drawString(52, 83, "모두 맞았어요!")
+    else:
+        text_y = 90
+        for i, problem in enumerate(data["forBeforeRating"]):
+            if i%5 == 0 and i > 0:
+                text_y -= 30
+            
+            c.setFillColor(black_color)
+            c.setFont("Pretendard-Regular", 18)
+            p_num = f'{problem["problemNumber"]}번'
+            c.drawString(45 + (i%5)*105, text_y, p_num)
 
-        p_num_width = c.stringWidth(p_num, "Pretendard-Regular", 18)
+            p_num_width = c.stringWidth(p_num, "Pretendard-Regular", 18)
 
-        box_width = 40
-        box_height = 20
-        box_x = 50 + (i%5)*110 + p_num_width
-        box_y = text_y - 4
+            box_width = 40
+            box_height = 20
+            box_x = 50 + (i%5)*105 + p_num_width
+            box_y = text_y - 4
 
-        # 박스 그리기 (배경)
-        c.setLineWidth(1)  # 테두리 두께 설정 (얇게)
-        c.setStrokeColor(HexColor("#FFA500"))  # 주황색 테두리
-        c.roundRect(box_x, box_y, box_width, box_height, radius=4, stroke=1, fill=0)
+            # 박스 그리기 (배경)
+            c.setLineWidth(1)  # 테두리 두께 설정 (얇게)
+            c.setStrokeColor(HexColor("#FFA500"))  # 주황색 테두리
+            c.roundRect(box_x, box_y, box_width, box_height, radius=4, stroke=1, fill=0)
 
-        # 텍스트 그리기
-        c.setFont("Pretendard-Regular", 14)  # 글꼴과 크기 설정
-        c.setFillColor(orange_color)
-        c.drawString(box_x + 6, box_y + 5, f'{problem["correctRate"]}%')
+            # 텍스트 그리기
+            c.setFont("Pretendard-Regular", 14)  # 글꼴과 크기 설정
+            c.setFillColor(orange_color)
+            c.drawString(box_x + 6, box_y + 5, f'{int(problem["correctRate"])}%')
 
-
-    all_wrong_problems = data["forCurrentRating"] + data["forNextRating"] + data["forBeforeRating"]
-    cnt1, cnt2, cnt3 = len(data["forCurrentRating"]), len(data["forNextRating"]), len(data["forBeforeRating"])
 
     page_num = 2
     
@@ -279,88 +296,3 @@ def create_review_note(data: DetailResultApplication):
         page_num += 1
     
     c.save()
-
-# create_review_note({
-#   "testResultId": 2688,
-#   "score": 83,
-#   "solvingTime": "PT1H11M",
-#   "averageSolvingTime": "PT1H13M10.588235294S",
-#   "estimatedRatingGetResponses": [
-#     {
-#       "ratingProvider": "대성마이맥",
-#       "estimatedRating": 2
-#     },
-#     {
-#       "ratingProvider": "이투스",
-#       "estimatedRating": 2
-#     }
-#   ],
-#   "incorrectProblems": [
-#     {
-#       "problemNumber": "3",
-#       "correctRate": 85
-#     },
-#     {
-#       "problemNumber": "25",
-#       "correctRate": 81
-#     },
-#     {
-#       "problemNumber": "27",
-#       "correctRate": 69
-#     },
-#     {
-#       "problemNumber": "28",
-#       "correctRate": 44
-#     },
-#     {
-#       "problemNumber": "29",
-#       "correctRate": 13
-#     }
-#   ],
-#   "forCurrentRating": [{
-#       "problemNumber": "3",
-#       "difficultLevel": "중하",
-#       "correctRate": 85,
-#       "rating": "4등급",
-#       "imageUrl": "https://s3-moplus.s3.ap-northeast-2.amazonaws.com/2025%ED%95%99%EB%85%84%EB%8F%84%20%EA%B3%A03%2010%EC%9B%94%20%EB%AA%A8%ED%8F%89%20%ED%99%95%EB%A5%A0%EA%B3%BC%20%ED%86%B5%EA%B3%84/738.png"
-#     },
-#     {
-#       "problemNumber": "25",
-#       "difficultLevel": "중하",
-#       "correctRate": 81,
-#       "rating": "4등급",
-#       "imageUrl": "https://s3-moplus.s3.ap-northeast-2.amazonaws.com/2025%ED%95%99%EB%85%84%EB%8F%84%20%EA%B3%A03%2010%EC%9B%94%20%EB%AA%A8%ED%8F%89%20%ED%99%95%EB%A5%A0%EA%B3%BC%20%ED%86%B5%EA%B3%84/760.png"
-#     }],
-#   "forNextRating": [
-#     {
-#       "problemNumber": "28",
-#       "difficultLevel": "상",
-#       "correctRate": 44,
-#       "rating": "1등급",
-#       "imageUrl": "https://s3-moplus.s3.ap-northeast-2.amazonaws.com/2025%ED%95%99%EB%85%84%EB%8F%84%20%EA%B3%A03%2010%EC%9B%94%20%EB%AA%A8%ED%8F%89%20%ED%99%95%EB%A5%A0%EA%B3%BC%20%ED%86%B5%EA%B3%84/763.png"
-#     }
-#   ],
-#   "forBeforeRating": [
-#     {
-#       "problemNumber": "3",
-#       "difficultLevel": "중하",
-#       "correctRate": 85,
-#       "rating": "4등급",
-#       "imageUrl": "https://s3-moplus.s3.ap-northeast-2.amazonaws.com/2025%ED%95%99%EB%85%84%EB%8F%84%20%EA%B3%A03%2010%EC%9B%94%20%EB%AA%A8%ED%8F%89%20%ED%99%95%EB%A5%A0%EA%B3%BC%20%ED%86%B5%EA%B3%84/738.png"
-#     },
-#     {
-#       "problemNumber": "25",
-#       "difficultLevel": "중하",
-#       "correctRate": 81,
-#       "rating": "4등급",
-#       "imageUrl": "https://s3-moplus.s3.ap-northeast-2.amazonaws.com/2025%ED%95%99%EB%85%84%EB%8F%84%20%EA%B3%A03%2010%EC%9B%94%20%EB%AA%A8%ED%8F%89%20%ED%99%95%EB%A5%A0%EA%B3%BC%20%ED%86%B5%EA%B3%84/760.png"
-#     },
-#     {
-#       "problemNumber": "27",
-#       "difficultLevel": "중",
-#       "correctRate": 69,
-#       "rating": "3등급",
-#       "imageUrl": "https://s3-moplus.s3.ap-northeast-2.amazonaws.com/2025%ED%95%99%EB%85%84%EB%8F%84%20%EA%B3%A03%2010%EC%9B%94%20%EB%AA%A8%ED%8F%89%20%ED%99%95%EB%A5%A0%EA%B3%BC%20%ED%86%B5%EA%B3%84/762.png"
-#     }
-#   ]
-# })
