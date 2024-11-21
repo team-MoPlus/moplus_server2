@@ -10,10 +10,8 @@ from utils import draw_dashed_box, draw_heading, draw_page_number, draw_problem_
 
 pattern = r"PT(?:(\d+)H)?(?:(\d+)M)?"
 
-def create_review_note(data: DetailResultApplication):
+def create_review_note(data: DetailResultApplication, file_name: str):
     buffer = io.BytesIO()
-    # 현재 파일의 디렉토리 경로를 기준으로 폰트 경로 설정
-    # base_dir = os.path.dirname(__file__)
     
     # 한글 폰트 등록
     pdfmetrics.registerFont(TTFont('Pretendard-Regular', "pdffonts/Pretendard-Regular.ttf"))
@@ -303,7 +301,7 @@ def create_review_note(data: DetailResultApplication):
     buffer.seek(0)
 
     headers = {
-        "Content-Disposition": "attachment; filename=download_test.pdf",  # 파일명 설정
+        f"Content-Disposition": "attachment; filename={file_name}.pdf",  # 파일명 설정
     }
 
     # StreamingResponse로 PDF 반환
