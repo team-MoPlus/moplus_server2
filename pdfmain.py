@@ -1,4 +1,5 @@
-import os, re
+import os, re, io
+from fastapi.responses import StreamingResponse
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
@@ -10,6 +11,7 @@ from utils import draw_dashed_box, draw_heading, draw_page_number, draw_problem_
 pattern = r"PT(?:(\d+)H)?(?:(\d+)M)?"
 
 def create_review_note(data: DetailResultApplication):
+    buffer = io.BytesIO()
     # 현재 파일의 디렉토리 경로를 기준으로 폰트 경로 설정
     # base_dir = os.path.dirname(__file__)
     
@@ -17,7 +19,7 @@ def create_review_note(data: DetailResultApplication):
     pdfmetrics.registerFont(TTFont('Pretendard-Regular', "pdffonts/Pretendard-Regular.ttf"))
     pdfmetrics.registerFont(TTFont('Pretendard-Bold', "pdffonts/Pretendard-Bold.ttf"))
     pdfmetrics.registerFont(TTFont('Pretendard-Thin', "pdffonts/Pretendard-Thin.ttf"))
-    c = canvas.Canvas("./output.pdf", pagesize=A4)
+    c = canvas.Canvas(buffer, pagesize=A4)
     width, height = A4  # (595.2755905511812, 841.8897637795277)
     
 
@@ -296,3 +298,13 @@ def create_review_note(data: DetailResultApplication):
         page_num += 1
     
     c.save()
+
+    # 버퍼의 시작 위치로 이동
+    buffer.seek(0)
+
+    headers = {
+        "Content-Disposition": "attachment; filename=download_test.pdf",  # 파일명 설정
+    }
+
+    # StreamingResponse로 PDF 반환
+    return StreamingResponse(buffer, headers=headers, media_type="application/pdf")
