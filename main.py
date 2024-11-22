@@ -6,7 +6,7 @@ from fastapi import FastAPI, HTTPException
 from time import time
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
-from models import DetailResultApplication, TestResult
+from models import DetailResultApplication, PDFBody, TestResult
 from models import TestResult
 from pdfmain import create_review_note
 from database import SessionLocal, engine
@@ -72,13 +72,15 @@ async def get_result_info_from_client(test_result: TestResult):
     return {"message": "Data received successfully", "response": test_result}
 
 @app.post("/detailResultApplication")
-async def get_detail_result_application_from_client(detail_result: DetailResultApplication, file_name: str):
+async def get_detail_result_application_from_client(param: PDFBody):
     try:
-        detail_result = detail_result.model_dump()
-        await create_review_note(detail_result, file_name)
+        detail_result = param.test_result.model_dump()
+        create_review_note(detail_result, param.file_name)
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+    return {"message": "Success"}
 
 
 @app.get("/test/rating/{practiceTestId}", tags=["test"])

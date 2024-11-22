@@ -94,6 +94,10 @@ class DetailResultApplication(BaseModel):
     forNextRating: List[RecommendedProblem]
     forBeforeRating: List[RecommendedProblem]
 
+class PDFBody(BaseModel):
+    test_result: DetailResultApplication
+    file_name: str
+
 ## DB table
 class PracticeTest(Base):
     __tablename__ = "practice_test"
