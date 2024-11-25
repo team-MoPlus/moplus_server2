@@ -17,6 +17,7 @@ import httpx
 import asyncio
 import os
 from reportlab.pdfgen import canvas
+from urllib.parse import quote
 
 
 load_dotenv()
@@ -25,7 +26,7 @@ API_URL = os.getenv("API_URL")
 
 models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI(root_path="/api/fastapi")
+app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
@@ -109,13 +110,10 @@ def get_image_url(problem_id: int, db:Session=Depends(get_db)):
 @app.post("/download-review")
 async def download_review_note(data: PDFBody):
     buffer = io.BytesIO()
-    await create_review_note(data.test_result, data.file_name, buffer)
+    return create_review_note(data.test_result, data.file_name, buffer)
 
-    headers = {
-        "Content-Disposition": f"attachment; filename={data.file_name}",
-        "Access-Control-Allow-Origin": "https://www.mopl.kr",  # 클라이언트 도메인 추가
-        "Access-Control-Allow-Methods": "POST, OPTIONS",      # 허용 메서드 추가
-        "Access-Control-Allow-Headers": "*",                 # 허용 헤더 추가
-    }
+    # headers = {
+    #     "Content-Disposition": f"attachment; filename*=UTF-8''{data.file_name}",
+    # }
 
-    return StreamingResponse(buffer, headers=headers, media_type="application/pdf")
+    # return StreamingResponse(buffer, headers=headers, media_type="application/pdf")
