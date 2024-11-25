@@ -75,7 +75,6 @@ async def get_result_info_from_client(test_result: TestResult):
 async def get_detail_result_application_from_client(param: PDFBody):
     try:
         detail_result = param.test_result.model_dump()
-        create_review_note(detail_result, param.file_name)
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -95,28 +94,28 @@ def get_image_url(problem_id: int, db:Session=Depends(get_db)):
     return problem_image_info.image_url
 
 # 복습표 생성 요청
-@app.post("/request-review")
-async def request_review_note():
-    try:
-        # problem_info = crud.get_image(db, skip=0, limit=0)
-        await create_review_note()
+# @app.post("/request-review")
+# async def request_review_note():
+#     try:
+#         # problem_info = crud.get_image(db, skip=0, limit=0)
+#         await create_review_note()
 
-        return {"status": "OK"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+#         return {"status": "OK"}
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=str(e))
     
 
 # PDF 다운로드 엔드포인트
-@app.get("/download-review")
-async def download_review_note(file_name: str):
+@app.post("/download-review")
+async def download_review_note(data: PDFBody):
     buffer = io.BytesIO()
-    c = canvas.Canvas(buffer)
-    
-    c.save()
-    buffer.seek(0)
+    await create_review_note(data.test_result, data.file_name, buffer)
 
     headers = {
-        f"Content-Disposition": "attachment; filename={file_name}.pdf",
+        "Content-Disposition": f"attachment; filename={data.file_name}",
+        "Access-Control-Allow-Origin": "https://www.mopl.kr",  # 클라이언트 도메인 추가
+        "Access-Control-Allow-Methods": "POST, OPTIONS",      # 허용 메서드 추가
+        "Access-Control-Allow-Headers": "*",                 # 허용 헤더 추가
     }
 
     return StreamingResponse(buffer, headers=headers, media_type="application/pdf")
