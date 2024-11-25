@@ -32,7 +32,7 @@ app.add_middleware(
     allow_origins=["http://localhost:3000", "https://www.mopl.kr"],  # Next.js 앱 주소
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["Content-Type", "Authorization", "Access-Control-Allow-Credentials"],
+    allow_headers=["Content-Type", "Authorization", "Access-Control-Allow-Credentials", "Cache-Control"],
 )
 
 
