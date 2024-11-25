@@ -82,7 +82,7 @@ def draw_problem_page(c, data:RecommendedProblem, orange_color=HexColor('#FC6C02
     draw_dashed_box(c, 22, 40, A4_width-60, A4_height-165)
 
     ## 문제 정보
-    p_num_width = c.stringWidth(f'{data["problemNumber"]}번', "Pretendard-Bold", 28)
+    p_num_width = c.stringWidth(f'{data.problemNumber}번', "Pretendard-Bold", 28)
 
     box_width = p_num_width + 20
     box_height = 40
@@ -98,7 +98,7 @@ def draw_problem_page(c, data:RecommendedProblem, orange_color=HexColor('#FC6C02
     # 텍스트 그리기
     c.setFont("Pretendard-Regular", 28)  # 글꼴과 크기 설정
     c.setFillColor(orange_color)
-    c.drawString(box_x+10, box_y+10, f'{data["problemNumber"]}번')
+    c.drawString(box_x+10, box_y+10, f'{data.problemNumber}번')
 
     c.setFont("Pretendard-Regular", 18)
     c.setFillColor(black_color)
@@ -108,11 +108,11 @@ def draw_problem_page(c, data:RecommendedProblem, orange_color=HexColor('#FC6C02
 
     c.setFont("Pretendard-Bold", 18)
     c.setFillColor(orange_color)
-    c.drawString(190, 680, f'{data["difficultLevel"]}')
-    c.drawString(310, 680, f'{data["correctRate"]}%')
-    c.drawString(470, 680, f'{data["rating"]}')
+    c.drawString(190, 680, f'{data.difficultLevel}')
+    c.drawString(310, 680, f'{data.correctRate}%')
+    c.drawString(470, 680, f'{data.rating}')
 
-    res = request.urlopen(data["imageUrl"]).read()
+    res = request.urlopen(data.imageUrl).read()
     
     image_reader = convert_image_to_imagereader(Image.open(BytesIO(res)))
 
