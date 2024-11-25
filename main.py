@@ -112,7 +112,10 @@ async def download_review_note(data: PDFBody):
     await create_review_note(data.test_result, data.file_name, buffer)
 
     headers = {
-        f"Content-Disposition": "attachment; filename={file_name}.pdf",
+        "Content-Disposition": f"attachment; filename={data.file_name}",
+        "Access-Control-Allow-Origin": "https://www.mopl.kr",  # 클라이언트 도메인 추가
+        "Access-Control-Allow-Methods": "POST, OPTIONS",      # 허용 메서드 추가
+        "Access-Control-Allow-Headers": "*",                 # 허용 헤더 추가
     }
 
     return StreamingResponse(buffer, headers=headers, media_type="application/pdf")
