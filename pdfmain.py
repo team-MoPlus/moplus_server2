@@ -10,9 +10,8 @@ from utils import draw_dashed_box, draw_heading, draw_page_number, draw_problem_
 
 pattern = r"PT(?:(\d+)H)?(?:(\d+)M)?"
 
-def create_review_note(data: DetailResultApplication, file_name: str):
-    buffer = io.BytesIO()
-    
+def create_review_note(data: DetailResultApplication, file_name: str, buffer):
+
     # 한글 폰트 등록
     pdfmetrics.registerFont(TTFont('Pretendard-Regular', "pdffonts/Pretendard-Regular.ttf"))
     pdfmetrics.registerFont(TTFont('Pretendard-Bold', "pdffonts/Pretendard-Bold.ttf"))
@@ -42,8 +41,8 @@ def create_review_note(data: DetailResultApplication, file_name: str):
     # 점수
     c.setFillColor(orange_color)
     c.setFont("Pretendard-Regular", 80)
-    c.drawString(35, height - 230, f'{data["score"]}')
-    score_width = c.stringWidth(f'{data["score"]}', "Pretendard-Regular", 80)
+    c.drawString(35, height - 230, f'{data.score}')
+    score_width = c.stringWidth(f'{data.score}', "Pretendard-Regular", 80)
 
     c.setFillColor(black_color)
     c.setFont("Pretendard-Regular", 60)
@@ -56,7 +55,7 @@ def create_review_note(data: DetailResultApplication, file_name: str):
     # 내 등급
     c.setFillColor(orange_color)
     c.setFont("Pretendard-Regular", 40)
-    c.drawString(245, height - 230, f'{data["estimatedRatingGetResponses"][0]["estimatedRating"]}')
+    c.drawString(245, height - 230, f'{data.estimatedRatingGetResponses[0].estimatedRating}')
 
     c.setFillColor(black_color)
     c.setFont("Pretendard-Regular", 30)
@@ -97,14 +96,14 @@ def create_review_note(data: DetailResultApplication, file_name: str):
 
     ## 문제들
     text_y = 500
-    for i, problem in enumerate(data["incorrectProblems"]):
+    for i, problem in enumerate(data.incorrectProblems):
         
         if i%5 == 0 and i > 0:
             text_y -= 30
         
         c.setFillColor(black_color)
         c.setFont("Pretendard-Regular", 20)
-        p_num = f'{problem["problemNumber"]}번'
+        p_num = f'{problem.problemNumber}번'
         c.drawString(25 + (i%5)*105, text_y, p_num)
 
         p_num_width = c.stringWidth(p_num, "Pretendard-Regular", 24)
@@ -122,7 +121,7 @@ def create_review_note(data: DetailResultApplication, file_name: str):
         # 텍스트 그리기
         c.setFont("Pretendard-Regular", 14)  # 글꼴과 크기 설정
         c.setFillColor(orange_color)
-        c.drawString(box_x + 6, box_y + 4, f'{int(problem["correctRate"])}%')  # 박스 안 텍스트 위치 조정
+        c.drawString(box_x + 6, box_y + 4, f'{int(problem.correctRate)}%')  # 박스 안 텍스트 위치 조정
 
     # 점선 상자1
     draw_dashed_box(c, 30, 190, width - 60, 270)
@@ -149,14 +148,14 @@ def create_review_note(data: DetailResultApplication, file_name: str):
         c.drawString(52, 348, "모두 맞았어요!")
     else:
         text_y = 355
-        for i, problem in enumerate(data["forCurrentRating"]):
+        for i, problem in enumerate(data.forCurrentRating):
             
             if i%5 == 0 and i > 0:
                 text_y -= 30
             
             c.setFillColor(black_color)
             c.setFont("Pretendard-Regular", 18)
-            p_num = f'{problem["problemNumber"]}번'
+            p_num = f'{problem.problemNumber}번'
             c.drawString(45 + (i%5)*105, text_y, p_num)
 
             p_num_width = c.stringWidth(p_num, "Pretendard-Regular", 18)
@@ -174,7 +173,7 @@ def create_review_note(data: DetailResultApplication, file_name: str):
             # 텍스트 그리기
             c.setFont("Pretendard-Regular", 14)  # 글꼴과 크기 설정
             c.setFillColor(orange_color)
-            c.drawString(box_x + 6, box_y + 5, f'{int(problem["correctRate"])}%')  # 박스 안 텍스트 위치 조정
+            c.drawString(box_x + 6, box_y + 5, f'{int(problem.correctRate)}%')  # 박스 안 텍스트 위치 조정
 
     ### 다음 등급을 위해 맞춰야 하는 문제 ###
     # 세로선 그리기 (오렌지 색상)
@@ -198,7 +197,7 @@ def create_review_note(data: DetailResultApplication, file_name: str):
         c.drawString(52, 230, "모두 맞았어요!")
     else:
         text_y = 240
-        for i, problem in enumerate(data["forNextRating"]):
+        for i, problem in enumerate(data.forNextRating):
             
             if i%5 == 0 and i > 0:
                 text_y -= 30
@@ -223,7 +222,7 @@ def create_review_note(data: DetailResultApplication, file_name: str):
             # 텍스트 그리기
             c.setFont("Pretendard-Regular", 14)  # 글꼴과 크기 설정
             c.setFillColor(orange_color)
-            c.drawString(box_x + 6, box_y + 5, f'{int(problem["correctRate"])}%')
+            c.drawString(box_x + 6, box_y + 5, f'{int(problem.correctRate)}%')
 
     # 점선 상자2
     draw_dashed_box(c, 30, 40, width - 60, 140)
@@ -256,7 +255,7 @@ def create_review_note(data: DetailResultApplication, file_name: str):
             
             c.setFillColor(black_color)
             c.setFont("Pretendard-Regular", 18)
-            p_num = f'{problem["problemNumber"]}번'
+            p_num = f'{problem.problemNumber}번'
             c.drawString(45 + (i%5)*105, text_y, p_num)
 
             p_num_width = c.stringWidth(p_num, "Pretendard-Regular", 18)
@@ -274,23 +273,23 @@ def create_review_note(data: DetailResultApplication, file_name: str):
             # 텍스트 그리기
             c.setFont("Pretendard-Regular", 14)  # 글꼴과 크기 설정
             c.setFillColor(orange_color)
-            c.drawString(box_x + 6, box_y + 5, f'{int(problem["correctRate"])}%')
+            c.drawString(box_x + 6, box_y + 5, f'{int(problem.correctRate)}%')
 
 
     page_num = 2
     
     
-    for problem_data in data["forCurrentRating"]:
+    for problem_data in data.forCurrentRating:
         c.showPage()
         draw_problem_page(c, data=problem_data, page_number=page_num, flag=0)
         page_num += 1
 
-    for problem_data in data["forNextRating"]:
+    for problem_data in data.forNextRating:
         c.showPage()
         draw_problem_page(c, data=problem_data, page_number=page_num, flag=1)
         page_num += 1
 
-    for problem_data in data["forBeforeRating"]:
+    for problem_data in data.forBeforeRating:
         c.showPage()
         draw_problem_page(c, data=problem_data, page_number=page_num, flag=2)
         page_num += 1
