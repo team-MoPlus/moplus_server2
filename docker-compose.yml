@@ -12,3 +12,9 @@ services:
       - .:/code
     env_file:
       - .env
+    networks:
+      - nginx-network # NGINX와 통신하기 위해 동일한 네트워크 연결
+
+networks:
+  nginx-network:
+    external: true # 외부에서 생성된 nginx-network를 사용
