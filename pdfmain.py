@@ -66,7 +66,7 @@ def create_review_note(data: DetailResultApplication, file_name: str, buffer):
     c.drawString(280, height - 256, "내 등급")
 
     # 내 풀이 시간
-    match = re.match(pattern, data["solvingTime"])
+    match = re.match(pattern, data.solvingTime)
     h, m = f'{match.group(1) if match and match.group(1) else 0}', f'{match.group(2) if match and match.group(2) else 0}'
     c.setFillColor(orange_color)
     c.setFont("Pretendard-Regular", 40)
@@ -142,7 +142,7 @@ def create_review_note(data: DetailResultApplication, file_name: str, buffer):
     text.textLine("넘어가야하는 문제들이예요.")
     c.drawText(text)
 
-    if len(data["forCurrentRating"]) == 0:
+    if len(data.forCurrentRating) == 0:
         c.setFillColor(HexColor("#95E0BB"))
         c.setFont("Pretendard-Bold", 20)
         c.drawString(52, 348, "모두 맞았어요!")
@@ -191,7 +191,7 @@ def create_review_note(data: DetailResultApplication, file_name: str, buffer):
     text.textLine("다음 등급에서 맞춰야하는 문제들이예요.")
     c.drawText(text)
 
-    if len(data["forNextRating"]) == 0:
+    if len(data.forNextRating) == 0:
         c.setFillColor(HexColor("#95E0BB"))
         c.setFont("Pretendard-Bold", 20)
         c.drawString(52, 230, "모두 맞았어요!")
@@ -204,7 +204,7 @@ def create_review_note(data: DetailResultApplication, file_name: str, buffer):
             
             c.setFillColor(black_color)
             c.setFont("Pretendard-Regular", 18)
-            p_num = f'{problem["problemNumber"]}번'
+            p_num = f'{problem.problemNumber}번'
             c.drawString(45 + (i%5)*105, text_y, p_num)
 
             p_num_width = c.stringWidth(p_num, "Pretendard-Regular", 18)
@@ -243,13 +243,13 @@ def create_review_note(data: DetailResultApplication, file_name: str, buffer):
     text.textLine("현재 등급 이상을 안정적으로 받기 위해 체크해볼 만한 문제예요.")
     c.drawText(text)
 
-    if len(data["forBeforeRating"]) == 0:
+    if len(data.forBeforeRating) == 0:
         c.setFillColor(HexColor("#95E0BB"))
         c.setFont("Pretendard-Bold", 20)
         c.drawString(52, 83, "모두 맞았어요!")
     else:
         text_y = 90
-        for i, problem in enumerate(data["forBeforeRating"]):
+        for i, problem in enumerate(data.forBeforeRating):
             if i%5 == 0 and i > 0:
                 text_y -= 30
             
