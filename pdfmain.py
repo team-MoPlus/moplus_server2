@@ -41,50 +41,50 @@ def create_review_note(data: DetailResultApplication, file_name: str, buffer):
     # 점수
     c.setFillColor(orange_color)
     c.setFont("Pretendard-Regular", 80)
-    c.drawString(35, height - 230, f'{data.score}')
+    c.drawString(35, height - 220, f'{data.score}')
     score_width = c.stringWidth(f'{data.score}', "Pretendard-Regular", 80)
 
     c.setFillColor(black_color)
     c.setFont("Pretendard-Regular", 60)
-    c.drawString(35 + score_width, height - 227, "점")
+    c.drawString(35 + score_width, height - 217, "점")
 
     c.setFillColor(grey_color)
     c.setFont("Pretendard-Regular", 20)
-    c.drawString(164, height - 258, "점수")
+    c.drawString(164, height - 248, "점수")
 
     # 내 등급
     c.setFillColor(orange_color)
     c.setFont("Pretendard-Regular", 40)
-    c.drawString(245, height - 230, f'{data.estimatedRatingGetResponses[0].estimatedRating}')
+    c.drawString(245, height - 220, f'{data.estimatedRatingGetResponses[0].estimatedRating}')
 
     c.setFillColor(black_color)
     c.setFont("Pretendard-Regular", 30)
-    c.drawString(270, height - 230, "등급")
+    c.drawString(270, height - 220, "등급")
 
     c.setFillColor(grey_color)
     c.setFont("Pretendard-Regular", 20)
-    c.drawString(280, height - 256, "내 등급")
+    c.drawString(280, height - 246, "내 등급")
 
     # 내 풀이 시간
     match = re.match(pattern, data.solvingTime)
     h, m = f'{match.group(1) if match and match.group(1) else 0}', f'{match.group(2) if match and match.group(2) else 0}'
     c.setFillColor(orange_color)
     c.setFont("Pretendard-Regular", 40)
-    c.drawString(392, height - 230, h)
-    c.drawString(440, height - 230, m)
+    c.drawString(392, height - 220, h)
+    c.drawString(440, height - 220, m)
 
 
     c.setFillColor(black_color)
     c.setFont("Pretendard-Regular", 36)
     h_width = c.stringWidth(h, "Pretendard-Regular", 40)
-    c.drawString(392+h_width, height - 230, "h")
+    c.drawString(392+h_width, height - 220, "h")
 
     m_width = c.stringWidth(m, "Pretendard-Regular", 40)
-    c.drawString(440+m_width, height - 230, "m")
+    c.drawString(440+m_width, height - 220, "m")
     
     c.setFillColor(grey_color)
     c.setFont("Pretendard-Regular", 20)
-    c.drawString(418, height - 256, "내 풀이 시간")
+    c.drawString(418, height - 246, "내 풀이 시간")
 
     ##### 전체 틀린 문제 #####
     # 세로선 그리기 (오렌지 색상)
