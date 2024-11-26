@@ -300,7 +300,7 @@ def create_review_note(data: DetailResultApplication, file_name: str, buffer):
     buffer.seek(0)
 
     headers = {
-        f"Content-Disposition": "attachment; filename={file_name}.pdf",  # 파일명 설정
+        f"Content-Disposition": "inline; filename={file_name}.pdf",  # 파일명 설정
     }
 
     # StreamingResponse로 PDF 반환
