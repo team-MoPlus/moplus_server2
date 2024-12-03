@@ -2,7 +2,6 @@ from typing import List
 from pydantic import BaseModel
 from sqlalchemy import DECIMAL, BigInteger, Column, DateTime, Double, Integer, String, Boolean, ForeignKey
 from sqlalchemy.orm import mapped_column, relationship
-from database import Base
 from sqlalchemy.ext.declarative import declarative_base
 from enum import Enum
 
