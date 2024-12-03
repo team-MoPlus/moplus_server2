@@ -96,33 +96,62 @@ def create_review_note(data: DetailResultApplication, file_name: str, buffer):
 
     ## 문제들
     text_y = 500
-    for i, problem in enumerate(data.incorrectProblems):
-        
-        if i%5 == 0 and i > 0:
-            text_y -= 30
-        
-        c.setFillColor(black_color)
-        c.setFont("Pretendard-Regular", 20)
-        p_num = f'{problem.problemNumber}번'
-        c.drawString(25 + (i%5)*105, text_y, p_num)
+    if len(data.incorrectProblems) <= 10:
+        for i, problem in enumerate(data.incorrectProblems):
+            
+            if i%5 == 0 and i > 0:
+                text_y -= 30
+            
+            c.setFillColor(black_color)
+            c.setFont("Pretendard-Regular", 20)
+            p_num = f'{problem.problemNumber}번'
+            c.drawString(25 + (i%5)*105, text_y, p_num)
 
-        p_num_width = c.stringWidth(p_num, "Pretendard-Regular", 24)
+            p_num_width = c.stringWidth(p_num, "Pretendard-Regular", 24)
 
-        box_width = 40
-        box_height = 20
-        box_x = 24 + (i%5)*105 + p_num_width
-        box_y = text_y - 3
+            box_width = 40
+            box_height = 20
+            box_x = 24 + (i%5)*105 + p_num_width
+            box_y = text_y - 3
 
-        # 박스 그리기 (배경)
-        c.setLineWidth(1)  # 테두리 두께 설정 (얇게)
-        c.setStrokeColor(HexColor("#FFA500"))  # 주황색 테두리
-        c.roundRect(box_x, box_y, box_width, box_height, radius=4, stroke=1, fill=0)
+            # 텍스트 그리기
+            c.setFont("Pretendard-Regular", 14)  # 글꼴과 크기 설정
+            c.setFillColor(orange_color)
+            c.drawString(box_x + 6, box_y + 4, f'{int(problem.correctRate)}%')  # 박스 안 텍스트 위치 조정
+            rate_width = c.stringWidth(f'{int(problem.correctRate)}%', "Pretendard-Regular", 14)
 
-        # 텍스트 그리기
-        c.setFont("Pretendard-Regular", 14)  # 글꼴과 크기 설정
-        c.setFillColor(orange_color)
-        c.drawString(box_x + 6, box_y + 4, f'{int(problem.correctRate)}%')  # 박스 안 텍스트 위치 조정
+            # 박스 그리기 (배경)
+            c.setLineWidth(1)  # 테두리 두께 설정 (얇게)
+            c.setStrokeColor(HexColor("#FFA500"))  # 주황색 테두리
+            c.roundRect(box_x, box_y, rate_width + 2, box_height, radius=4, stroke=1, fill=0)
 
+            
+        else:
+            for i, problem in enumerate(data.incorrectProblems):
+                if i%5 == 0 and i > 0:
+                    text_y -= 30
+                
+                c.setFillColor(black_color)
+                c.setFont("Pretendard-Regular", 20)
+                p_num = f'{problem.problemNumber}번'
+                c.drawString(25 + (i%5)*105, text_y, p_num)
+
+                p_num_width = c.stringWidth(p_num, "Pretendard-Regular", 24)
+
+                box_width = 40
+                box_height = 20
+                box_x = 24 + (i%5)*105 + p_num_width
+                box_y = text_y - 3
+
+                # 박스 그리기 (배경)
+                c.setLineWidth(1)  # 테두리 두께 설정 (얇게)
+                c.setStrokeColor(HexColor("#FFA500"))  # 주황색 테두리
+                c.roundRect(box_x, box_y, box_width, box_height, radius=4, stroke=1, fill=0)
+
+                # 텍스트 그리기
+                c.setFont("Pretendard-Regular", 14)  # 글꼴과 크기 설정
+                c.setFillColor(orange_color)
+                c.drawString(box_x + 6, box_y + 4, f'{int(problem.correctRate)}%')  # 박스 안 텍스트 위치 조정
     # 점선 상자1
     draw_dashed_box(c, 30, 190, width - 60, 270)
 
@@ -240,7 +269,7 @@ def create_review_note(data: DetailResultApplication, file_name: str, buffer):
     text = c.beginText(53, 119)
     text.setFont("Pretendard-Regular", 14)
     text.setTextOrigin(53, 119)
-    text.textLine("현재 등급 이상을 안정적으로 받기 위해 체크해볼 만한 문제예요.")
+    text.textLine("현재 등급 대비 난이도가 낮은 문제예요. 다시 한번 풀어보세요.")
     c.drawText(text)
 
     if len(data.forBeforeRating) == 0:
@@ -300,7 +329,7 @@ def create_review_note(data: DetailResultApplication, file_name: str, buffer):
     buffer.seek(0)
 
     headers = {
-        f"Content-Disposition": "inline; filename={file_name}.pdf",  # 파일명 설정
+        f"Content-Disposition": "attachment; filename={file_name}.pdf",  # 파일명 설정
     }
 
     # StreamingResponse로 PDF 반환
