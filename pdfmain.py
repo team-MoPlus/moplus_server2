@@ -270,7 +270,7 @@ def create_review_note(data: DetailResultApplication, file_name: str, buffer):
 
     c.setFillColor(grey_color)
     text = c.beginText(53, 119)
-    text.setFont("Pretendard-Regular", 14)
+    text.setFont("Pretendard-Regular", 12)
     text.setTextOrigin(53, 119)
     text.textLine("현재 등급 대비 난이도가 낮은 문제예요. 다시 한번 풀어보세요.")
     c.drawText(text)
