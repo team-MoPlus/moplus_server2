@@ -98,172 +98,175 @@ def create_review_note(data: DetailResultApplication, file_name: str, buffer):
     text_y = 500
     if len(data.incorrectProblems) <= 10:
         for i, problem in enumerate(data.incorrectProblems):
-            
             if i%5 == 0 and i > 0:
-                text_y -= 30
+                text_y -= 27
             
             c.setFillColor(black_color)
-            c.setFont("Pretendard-Regular", 20)
+            c.setFont("Pretendard-Regular", 16)
             p_num = f'{problem.problemNumber}번'
             c.drawString(25 + (i%5)*105, text_y, p_num)
 
-            p_num_width = c.stringWidth(p_num, "Pretendard-Regular", 24)
+            p_num_width = c.stringWidth(p_num, "Pretendard-Regular", 20)
 
             box_width = 40
-            box_height = 20
-            box_x = 24 + (i%5)*105 + p_num_width
+            box_height = 16
+            box_x = 23 + (i%5)*105 + p_num_width
             box_y = text_y - 3
 
             # 텍스트 그리기
-            c.setFont("Pretendard-Regular", 14)  # 글꼴과 크기 설정
+            c.setFont("Pretendard-Regular", 10)  # 글꼴과 크기 설정
             c.setFillColor(orange_color)
-            c.drawString(box_x + 6, box_y + 4, f'{int(problem.correctRate)}%')  # 박스 안 텍스트 위치 조정
-            rate_width = c.stringWidth(f'{int(problem.correctRate)}%', "Pretendard-Regular", 14)
+            c.drawString(box_x + 5, box_y + 4, f'{int(problem.correctRate)}%')  # 박스 안 텍스트 위치 조정
+            rate_width = c.stringWidth(f'{int(problem.correctRate)}%', "Pretendard-Regular", 10)
 
             # 박스 그리기 (배경)
             c.setLineWidth(1)  # 테두리 두께 설정 (얇게)
             c.setStrokeColor(HexColor("#FFA500"))  # 주황색 테두리
-            c.roundRect(box_x, box_y, rate_width + 2, box_height, radius=4, stroke=1, fill=0)
-
+            c.roundRect(box_x+1, box_y, rate_width + 7, box_height, radius=4, stroke=1, fill=0)
+    else:
+        for i, problem in enumerate(data.incorrectProblems):
+            if i%5 == 0 and i > 0:
+                text_y -= 20
             
-        else:
-            for i, problem in enumerate(data.incorrectProblems):
-                if i%5 == 0 and i > 0:
-                    text_y -= 30
-                
-                c.setFillColor(black_color)
-                c.setFont("Pretendard-Regular", 20)
-                p_num = f'{problem.problemNumber}번'
-                c.drawString(25 + (i%5)*105, text_y, p_num)
+            c.setFillColor(black_color)
+            c.setFont("Pretendard-Regular", 10)
+            p_num = f'{problem.problemNumber}번'
+            c.drawString(25 + (i%5)*105, text_y+10, p_num)
 
-                p_num_width = c.stringWidth(p_num, "Pretendard-Regular", 24)
+            p_num_width = c.stringWidth(p_num, "Pretendard-Regular", 14)
 
-                box_width = 40
-                box_height = 20
-                box_x = 24 + (i%5)*105 + p_num_width
-                box_y = text_y - 3
+            box_width = 40
+            box_height = 12
+            box_x = 24 + (i%5)*105 + p_num_width
+            box_y = text_y + 7
 
-                # 박스 그리기 (배경)
-                c.setLineWidth(1)  # 테두리 두께 설정 (얇게)
-                c.setStrokeColor(HexColor("#FFA500"))  # 주황색 테두리
-                c.roundRect(box_x, box_y, box_width, box_height, radius=4, stroke=1, fill=0)
+            # 텍스트 그리기
+            c.setFont("Pretendard-Regular", 8)  # 글꼴과 크기 설정
+            c.setFillColor(orange_color)
+            c.drawString(box_x + 6, box_y + 4, f'{int(problem.correctRate)}%')  # 박스 안 텍스트 위치 조정
+            rate_width = c.stringWidth(f'{int(problem.correctRate)}%', "Pretendard-Regular", 8)
 
-                # 텍스트 그리기
-                c.setFont("Pretendard-Regular", 14)  # 글꼴과 크기 설정
-                c.setFillColor(orange_color)
-                c.drawString(box_x + 6, box_y + 4, f'{int(problem.correctRate)}%')  # 박스 안 텍스트 위치 조정
+            # 박스 그리기 (배경)
+            c.setLineWidth(1)  # 테두리 두께 설정 (얇게)
+            c.setStrokeColor(HexColor("#FFA500"))  # 주황색 테두리
+            c.roundRect(box_x+2, box_y, rate_width + 8, box_height, radius=4, stroke=1, fill=0)
+            
     # 점선 상자1
-    draw_dashed_box(c, 30, 190, width - 60, 270)
+    draw_dashed_box(c, 30, 175, width - 60, 255)
 
     ### 현재 등급에서 맞췄어야 하는 문제 ###
     # 세로선 그리기 (오렌지 색상)
     c.setDash([])
-    draw_vertical_orange(c, 40, 445, 40, 420, orange_color)  # 세로선 좌표
+    draw_vertical_orange(c, 40, 425, 40, 400, orange_color)  # 세로선 좌표
 
     c.setFillColor(black_color)
-    c.setFont("Pretendard-Bold", 20)
-    c.drawString(48, 426, "현재 등급에서 맞췄어야 하는 문제")  # 텍스트 위치 설정
+    c.setFont("Pretendard-Bold", 18)
+    c.drawString(48, 406, "현재 등급에서 맞췄어야 하는 문제")  # 텍스트 위치 설정
     c.setFillColor(grey_color)
-    text = c.beginText(53, 400)
-    text.setFont("Pretendard-Regular", 14)
-    text.setTextOrigin(53, 400)
+    text = c.beginText(53, 380)
+    text.setFont("Pretendard-Regular", 12)
+    text.setTextOrigin(53, 380)
     text.textLine("현재 틀린 문제 중 현재 등급에서 다음 등급으로 넘어가기 위해서 반드시 공부하고")
     text.textLine("넘어가야하는 문제들이예요.")
     c.drawText(text)
 
     if len(data.forCurrentRating) == 0:
         c.setFillColor(HexColor("#95E0BB"))
-        c.setFont("Pretendard-Bold", 20)
-        c.drawString(52, 348, "모두 맞았어요!")
+        c.setFont("Pretendard-Bold", 18)
+        c.drawString(52, 338, "모두 맞았어요!")
     else:
-        text_y = 355
+        text_y = 335
         for i, problem in enumerate(data.forCurrentRating):
             
             if i%5 == 0 and i > 0:
                 text_y -= 30
             
             c.setFillColor(black_color)
-            c.setFont("Pretendard-Regular", 18)
+            c.setFont("Pretendard-Regular", 14)
             p_num = f'{problem.problemNumber}번'
             c.drawString(45 + (i%5)*105, text_y, p_num)
 
-            p_num_width = c.stringWidth(p_num, "Pretendard-Regular", 18)
+            p_num_width = c.stringWidth(p_num, "Pretendard-Regular", 14)
 
             box_width = 40
             box_height = 20
             box_x = 50 + (i%5)*105 + p_num_width
             box_y = text_y - 4
+            rate_width = c.stringWidth(f'{int(problem.correctRate)}%', "Pretendard-Regular", 12)
+
+            # 텍스트 그리기
+            c.setFont("Pretendard-Regular", 12)  # 글꼴과 크기 설정
+            c.setFillColor(orange_color)
+            c.drawString(box_x + 4, box_y + 5, f'{int(problem.correctRate)}%')  # 박스 안 텍스트 위치 조정
 
             # 박스 그리기 (배경)
             c.setLineWidth(1)  # 테두리 두께 설정 (얇게)
             c.setStrokeColor(HexColor("#FFA500"))  # 주황색 테두리
-            c.roundRect(box_x, box_y, box_width, box_height, radius=4, stroke=1, fill=0)
+            c.roundRect(box_x, box_y, rate_width + 8, box_height, radius=4, stroke=1, fill=0)
 
-            # 텍스트 그리기
-            c.setFont("Pretendard-Regular", 14)  # 글꼴과 크기 설정
-            c.setFillColor(orange_color)
-            c.drawString(box_x + 6, box_y + 5, f'{int(problem.correctRate)}%')  # 박스 안 텍스트 위치 조정
+            
 
     ### 다음 등급을 위해 맞춰야 하는 문제 ###
     # 세로선 그리기 (오렌지 색상)
     c.setDash([])
-    draw_vertical_orange(c, 40, 311, 40, 286, orange_color)  # 세로선 좌표
+    draw_vertical_orange(c, 40, 291, 40, 266, orange_color)  # 세로선 좌표
 
     c.setFillColor(black_color)
-    c.setFont("Pretendard-Bold", 20)
-    c.drawString(48, 292, "다음 등급을 위해 맞춰야 하는 문제")  # 텍스트 위치 설정
+    c.setFont("Pretendard-Bold", 18)
+    c.drawString(48, 272, "다음 등급을 위해 맞춰야 하는 문제")  # 텍스트 위치 설정
 
     c.setFillColor(grey_color)
-    text = c.beginText(53, 266)
-    text.setFont("Pretendard-Regular", 14)
-    text.setTextOrigin(53, 266)
+    text = c.beginText(53, 246)
+    text.setFont("Pretendard-Regular", 12)
+    text.setTextOrigin(53, 246)
     text.textLine("다음 등급에서 맞춰야하는 문제들이예요.")
     c.drawText(text)
 
     if len(data.forNextRating) == 0:
         c.setFillColor(HexColor("#95E0BB"))
-        c.setFont("Pretendard-Bold", 20)
-        c.drawString(52, 230, "모두 맞았어요!")
+        c.setFont("Pretendard-Bold", 18)
+        c.drawString(52, 210, "모두 맞았어요!")
     else:
-        text_y = 240
+        text_y = 220
         for i, problem in enumerate(data.forNextRating):
             
             if i%5 == 0 and i > 0:
                 text_y -= 30
             
             c.setFillColor(black_color)
-            c.setFont("Pretendard-Regular", 18)
+            c.setFont("Pretendard-Regular", 14)
             p_num = f'{problem.problemNumber}번'
             c.drawString(45 + (i%5)*105, text_y, p_num)
 
-            p_num_width = c.stringWidth(p_num, "Pretendard-Regular", 18)
+            p_num_width = c.stringWidth(p_num, "Pretendard-Regular", 14)
 
             box_width = 40
             box_height = 20
             box_x = 50 + (i%5)*105 + p_num_width
             box_y = text_y - 4
+            rate_width = c.stringWidth(f'{int(problem.correctRate)}%', "Pretendard-Regular", 12)
+
+            # 텍스트 그리기
+            c.setFont("Pretendard-Regular", 12)  # 글꼴과 크기 설정
+            c.setFillColor(orange_color)
+            c.drawString(box_x + 4, box_y + 5, f'{int(problem.correctRate)}%')  # 박스 안 텍스트 위치 조정
 
             # 박스 그리기 (배경)
             c.setLineWidth(1)  # 테두리 두께 설정 (얇게)
             c.setStrokeColor(HexColor("#FFA500"))  # 주황색 테두리
-            c.roundRect(box_x, box_y, box_width, box_height, radius=4, stroke=1, fill=0)
-
-            # 텍스트 그리기
-            c.setFont("Pretendard-Regular", 14)  # 글꼴과 크기 설정
-            c.setFillColor(orange_color)
-            c.drawString(box_x + 6, box_y + 5, f'{int(problem.correctRate)}%')
+            c.roundRect(box_x, box_y, rate_width + 8, box_height, radius=4, stroke=1, fill=0)
 
     # 점선 상자2
-    draw_dashed_box(c, 30, 40, width - 60, 140)
+    draw_dashed_box(c, 30, 30, width - 60, 140)
 
     ### 등급 다지기 ###
     # 세로선 그리기 (오렌지 색상)
     c.setDash([])
-    draw_vertical_orange(c, 40, 166, 40, 141, orange_color)  # 세로선 좌표
+    draw_vertical_orange(c, 40, 161, 40, 136, orange_color)  # 세로선 좌표
 
     c.setFillColor(black_color)
-    c.setFont("Pretendard-Bold", 20)
-    c.drawString(48, 147, "등급 다지기")  # 텍스트 위치 설정
+    c.setFont("Pretendard-Bold", 18)
+    c.drawString(48, 142, "등급 다지기")  # 텍스트 위치 설정
 
     c.setFillColor(grey_color)
     text = c.beginText(53, 119)
@@ -274,35 +277,37 @@ def create_review_note(data: DetailResultApplication, file_name: str, buffer):
 
     if len(data.forBeforeRating) == 0:
         c.setFillColor(HexColor("#95E0BB"))
-        c.setFont("Pretendard-Bold", 20)
+        c.setFont("Pretendard-Bold", 18)
         c.drawString(52, 83, "모두 맞았어요!")
     else:
-        text_y = 90
+        text_y = 80
         for i, problem in enumerate(data.forBeforeRating):
             if i%5 == 0 and i > 0:
                 text_y -= 30
             
             c.setFillColor(black_color)
-            c.setFont("Pretendard-Regular", 18)
+            c.setFont("Pretendard-Regular", 14)
             p_num = f'{problem.problemNumber}번'
             c.drawString(45 + (i%5)*105, text_y, p_num)
 
-            p_num_width = c.stringWidth(p_num, "Pretendard-Regular", 18)
+            p_num_width = c.stringWidth(p_num, "Pretendard-Regular", 14)
 
             box_width = 40
             box_height = 20
             box_x = 50 + (i%5)*105 + p_num_width
             box_y = text_y - 4
 
+            rate_width = c.stringWidth(f'{int(problem.correctRate)}%', "Pretendard-Regular", 12)
+
+            # 텍스트 그리기
+            c.setFont("Pretendard-Regular", 12)  # 글꼴과 크기 설정
+            c.setFillColor(orange_color)
+            c.drawString(box_x + 4, box_y + 5, f'{int(problem.correctRate)}%')  # 박스 안 텍스트 위치 조정
+
             # 박스 그리기 (배경)
             c.setLineWidth(1)  # 테두리 두께 설정 (얇게)
             c.setStrokeColor(HexColor("#FFA500"))  # 주황색 테두리
-            c.roundRect(box_x, box_y, box_width, box_height, radius=4, stroke=1, fill=0)
-
-            # 텍스트 그리기
-            c.setFont("Pretendard-Regular", 14)  # 글꼴과 크기 설정
-            c.setFillColor(orange_color)
-            c.drawString(box_x + 6, box_y + 5, f'{int(problem.correctRate)}%')
+            c.roundRect(box_x, box_y, rate_width + 8, box_height, radius=4, stroke=1, fill=0)
 
 
     page_num = 2
